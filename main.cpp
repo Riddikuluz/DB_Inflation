@@ -18,7 +18,7 @@ int main() {
     };
     vector<sPro> arPro;
 
-    string dbSuper = "supermercado.csv";// supermercado - prueba1
+    string dbSuper = "prueba1.csv";// supermercado - prueba1
     ifstream allData;
     allData.open(dbSuper);
     if (allData.fail()) {
@@ -52,9 +52,10 @@ int main() {
         }
         if (cont > 5) {//una vez almacena todos los datos de la operacion
             cont = 0;
-            if ((estado == "AUTHORIZED" || estado == "FINALIZED") && sku != "0" && monto != "0" && descuento != "DESCUENTO"){
+            if ((estado == "AUTHORIZED" || estado == "FINALIZED") && sku != "0" && monto != "0" &&
+                descuento != "DESCUENTO") {
                 bool encontrado = false;
-                int auxstoi = stoi(fecha), valorF = stoi(monto);
+                int auxstoi = stoi(fecha), valorF = stoi(monto) - stoi(descuento);
 
                 /*cout << "\nsku: " << sku << endl;
                 cout << "nombre: " << nombre << endl;
@@ -81,7 +82,7 @@ int main() {
                     vector<int> arrMonto = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
                     vector<int> arrCant = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
                     arrMonto[auxstoi - 1] = valorF;
-                    arrCant[auxstoi - 1]=1;
+                    arrCant[auxstoi - 1] = 1;
                     sPro aux{nombre, arrMonto, arrCant};
                     arPro.push_back(aux);
                     //cout << " * sku NUEVA = " << arPro[arPro.size() - 1].vsku << " * mes = " << auxstoi << " * valor = "<< arPro[arPro.size() - 1].vMes[stoi(fecha) - 1] << endl;
@@ -103,7 +104,7 @@ int main() {
                 vacio = true;
             }
         }
-        if (!vacio){//si hay registro en los 12 meses
+        if (!vacio) {//si hay registro en los 12 meses
             //cout << arPro[i].vNombre<< endl;
             for (int k = 0; k < 12; k++) { // se suma al total de cada mes
                 //cout << " * cantidad " << arPro[i].vMes[k]<< endl;;
@@ -114,17 +115,19 @@ int main() {
         }
     }
 
+    cout << " * Variacion mensual" << endl;
+    vector<string> dMeses = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre","Octubre", "Noviembre", "Diciembre"};
 
-    cout <<" * Variacion mensual"<< endl;
-    double sInflacion=0;
-    vector<string> dMeses = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
-    for (int i = 0; i < 11; i++){
+    vector<double> infAcum = {(sMes[1] / sMes[0] - 1), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+    for (int i = 0; i < 11; i++) {
         //cout << " * Suma total de los valores del mes de " << i+1 << " = " << sMes[i] << endl;
-        cout << " * Indice del mes de " << dMeses[i+1] << " respecto del mes de " << dMeses[i] << " es igual a " << (sMes[i+1] / sMes[i]-1) * 100 << " %." << endl;
-        sInflacion+=(sMes[i+1] / sMes[i]-1) * 100;
+        cout << " * Indice del mes de " << dMeses[i + 1] << " respecto del mes de " << dMeses[i] << " es igual a "<< (sMes[i + 1] / sMes[i] - 1) * 100 << " %." << endl;
+        if (i)
+            infAcum[i] = (1 + infAcum[i - 1]) * (1 + (sMes[i + 1] / sMes[i] - 1)) - 1;
+        cout << " * Inflacion mensual acumulada es igual a " << infAcum[i]*100 << " %." << endl<< endl;
     }
-
-    cout << " * Inflacion mensual acumulada es igual a " << sInflacion << " %." << endl;
+    //cout << " * Inflacion mensual acumulada es igual a " << infAcum[10]*100  << " %." << endl;
 
     //cout << " * Indice del mes de " << dMeses[11] << " respecto del mes de " << dMeses[0] << " es igual a " << (sMes[11] / sMes[0]-1) * 100 << " %." << endl;
     //double inflacion = ((montoF - montoI) / montoI) * 100;
