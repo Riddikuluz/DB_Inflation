@@ -3,30 +3,17 @@
 #include <string>
 #include <sstream>
 #include <vector>
-#include <algorithm>
-
-#define fMES  "03"//inflacion al ultimo dia del mes
-#define name "CERVEZA BUDWEISER 6 PACK BOTELLA 343ML"
+//#include <algorithm>
+//#define name "CERVEZA BUDWEISER 6 PACK BOTELLA 343ML"
 
 using namespace std;
 
+int main() {
+    int compras = 0, cont = 0;
+    string sku, monto, fecha, descuento, estado, wes, nombre, hora;
 
-int main(int argc, char *argv[]) {
-
-    /*
-    if(argv[1]!= NULL)//Comprueba si se ingreso el polinomio
-        cout  << endl<< "Inflacion al mes de : " << argv[1] << endl << endl;
-    else{
-        cout  << endl<< "Parametro ingresado no valido, intente nuevamente."<< endl << endl;
-        return 0;
-    } */
-    double montoI = 0, montoF = 0;
-    int compras = 0, cont = 0, fechaF=stoi(fMES), fechaI = 0;
-    //int registros = 0,comprasProd = 0,
-    string sku, monto, fecha = "0",  estado, wes;
-    //string nombre,descuento,hora;
     struct sPro {
-        string vsku = "nada";
+        string vsku = "cod";
         vector<int> vMes = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     };
     vector<sPro> arPro;
@@ -39,100 +26,61 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     getline(allData, wes, '"');
-    while (allData.peek() != EOF) {//EOF==-1, no tocar while
+    while (allData.peek() != EOF &&compras<1800000){//EOF==-1
         string records;
         getline(allData, records, '"');
         //cout << "*" << records << "*" <<endl;
-
-        if (records != ";" && records != "\n")//omite los saltos de linea y ;
-            if (records != "SKU" && records != "NOMBRE" && records != "MONTO" && records != "DESCUENTO" &&
-                records != "FECHA" && records != "ESTADO") {//omite la primera linea
+        if (records != ";" && records != "\n"){
                 if (cont == 0)
-                    sku = records;
-                    //else if (cont == 1)
-                    //nombre = records;
+                    sku = records;//else if (cont == 1)//nombre = records;
                 else if (cont == 2)
                     monto = records;
-                    //else if (cont == 3)
-                    //descuento = records;
+                else if (cont == 3)
+                    descuento = records;
                 else if (cont == 4) {
                     stringstream fetcha(records);
                     getline(fetcha, fecha, 'T');
                     fecha = fecha.substr(0, 7);//ano y mes
                     fecha = fecha.substr(5, 7);// mes
-                   // getline(fetcha, hora, 'Z');
+                    //getline(fetcha, hora, 'Z');
                 } else
                     estado = records;
-                //cout << "contador: "<< cont << endl;
+                //cout << "contador: " << cont << endl;
                 cont++;
             }
-
         if (cont == 6) {//una vez almacena los datos de la operacion
             cont = 0;
-            //registros++;
-            if ( stoi(fMES) < stoi(fecha))
-                allData.close();
-            else if (fecha == "01" || stoi(fecha) == stoi(fMES)) {
-                if (estado == "AUTHORIZED" || estado == "FINALIZED") {
-                    int ind = 0, auxstoi=stoi(fecha);
-                    compras++;
-                    /*
-                     cout << "\nsku: " << sku << endl;
-                     cout << "nombre: " << nombre << endl;
-                     cout << "monto: " << monto << endl;
-                     cout << "descuento: " << descuento << endl;
-                     cout << "fecha: " << fecha << endl;
-                     cout << "hora: " << hora << endl;
-                     cout << "estado: " << estado << endl;
-                     cout << " * Total de compras= " << compras << endl;
-                     cout << "Precione enter para continuar ...";
-                     cin.get();
-                      */
-
-                    for (int i = 0; i < arPro.size(); i++) {//busca si el producto esta en el struct
-                        if (arPro[i].vsku == sku) {
-                            if (!arPro[i].vMes[auxstoi - 1] && arPro[i].vMes[0] &&  1!= auxstoi){
-                                arPro[i].vMes[auxstoi - 1] = stoi(monto);
-                                //cout << " * sku EXISTE= " << arPro[i].vsku << " * mes = " << stoi(fecha)<< " * valor = " << arPro[i].vMes[stoi(fecha) - 1] << endl;
-                                if (arPro[i].vMes[0] && arPro[i].vMes[auxstoi- 1] ) {
-                                    //cout << " * SKU = " << arPro[i].vsku << " * Valor enero = "<< arPro[i].vMes[0] << " * valor X = " << arPro[i].vMes[stoi(fMES)- 1] << endl;
-                                    montoI += double(arPro[i].vMes[0]);
-                                    montoF += double(arPro[i].vMes[auxstoi-1]);
-                                }
-                            } else
-                                //cout << " * MONTO DEL MES YA REGISTRADO *" << endl;
-                            ind = 1;
-                            i = arPro.size();
-                        }
+            if ((estado == "AUTHORIZED" || estado == "FINALIZED") && sku != "0" && monto != "0" && descuento!="DESCUENTO"){
+                compras++;
+                bool encontrado = false;
+                int auxstoi = stoi(fecha), valorF = stoi(monto) - stoi(descuento);
+/*
+                 cout << "\nsku: " << sku << endl;
+                 cout << "nombre: " << nombre << endl;
+                 cout << "monto: " << monto << endl;
+                 cout << "descuento: " << descuento << endl;
+                 cout << "fecha: " << fecha << endl;
+                 cout << "hora: " << hora << endl;
+                cout << "estado: " << estado << endl;
+                cout << "Precione enter para continuar ...";
+                cin.get();
+                */
+                for (int i = 0; i < arPro.size() && !encontrado; i++) {//busca si el producto esta en el struct
+                    if (arPro[i].vsku == sku) {
+                        encontrado = true;
+                        if (arPro[i].vMes[auxstoi - 1] == 0) {//comprueba si ya esta registrado el monto
+                            arPro[i].vMes[auxstoi - 1] = valorF;
+                            //cout << " * sku EXISTE= " << arPro[i].vsku << " * mes = " << auxstoi << " * valor = "<< arPro[i].vMes[auxstoi - 1] << endl;
+                        } //else
+                        // cout << " * MONTO DEL MES YA REGISTRADO *" << endl;
                     }
-
-                    if (!ind && auxstoi == 1) {//si el producto no esta lo agrega
-                        vector <int> arxu = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-                        arxu[auxstoi - 1] = stoi(monto);
-                        sPro aux{sku, arxu};
-                        arPro.push_back(aux);
-                        /*
-                        cout << " * sku NUEVA = " << arPro[i].vsku << " * mes = "<< stoi(fecha) << " * valor = " << arPro[arPro.size() - 1].vMes[stoi(fecha) - 1] << endl;
-
-                        cout << "Precione enter para continuar ...";
-                        cin.get();
-                        cout << endl;
-
-                         */
-                    } /*
- *
-                    if (nombre == name) {
-                        comprasProd++;
-                        if (montoI == 0) {
-                            montoI = stoi(monto);
-                            int aux = stoi(fecha);
-                            fechaI = aux - 1;
-                        } else {
-                            montoF = (stoi(monto));
-                            int aux = stoi(fecha);
-                            fechaF = aux - 1;
-                        }
-                    }*/
+                }
+                if (!encontrado) {//si el producto no esta lo agrega
+                    vector<int> arxu = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                    arxu[auxstoi - 1] = valorF;
+                    sPro aux{sku, arxu};
+                    arPro.push_back(aux);
+                    //cout << " * sku NUEVA = " << arPro[arPro.size() - 1].vsku << " * mes = " << auxstoi << " * valor = "<< arPro[arPro.size() - 1].vMes[stoi(fecha) - 1] << endl;
 
                 }
             }
@@ -151,35 +99,44 @@ int main(int argc, char *argv[]) {
     cout << " * Total de regitros = " << registros << endl;
  */
 
-
-
-/*
+    vector<double> sMes = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     for (int i = 0; i < arPro.size(); i++) {
-        cout << " * Marca = " << arPro[i].vsku;
-        for (int j = 0; j < 12; j++) {
-            cout << " * montos = " << arPro[i].vMes[j];
+        bool vacio = false;
+        for (int j = 0; j < 12 && !vacio; j++) {
+            if (!arPro[i].vMes[j]) {
+                vacio = true;
+            }
         }
-        cout << endl;
-        cout << "Precione enter para continuar ...";
-        cin.get();
-
-
+        if (vacio == false)
+            for (int k = 0; k < 12; k++)
+                sMes[k] = sMes[k] + arPro[i].vMes[k];
     }
 
-    for (int i = 0; i < arPro.size(); i++) {
-        if (arPro[i].vMes[0] && arPro[i].vMes[stoi(fMES)- 1] ) {
-            cout << " * SKU = " << arPro[i].vsku << " * Valor enero = "<< arPro[i].vMes[0] << " * valor X = " << arPro[i].vMes[stoi(fMES)- 1] << endl;
-            montoI += double(arPro[i].vMes[0]);
-            montoF += double(arPro[i].vMes[stoi(fMES)- 1]);
-            fechaF = stoi(fMES);
-        }
-    }
-    */
+    for (int i = 0; i < 12; i++) {
+        cout << " * Suma total valor del mes de " << i << " = " << sMes[i] << endl;}
 
-    double inflacion = ((montoF - montoI) / montoI) * 100;
-    cout << " * N de productos " << arPro.size() << endl;
-    cout << montoF << " / " << montoI << endl;
-    cout << " * Inflacion entre " << fechaI << " y " << fechaF << " es igual a " << inflacion << " %." << endl;
+    cout << " * Inflacion entre enero y febrero es igual a " << ((sMes[1] - sMes[0]) / sMes[0]) * 100 << " %." << endl;
+    cout << " * Inflacion entre febrero y marzo es igual a " << ((sMes[2] - sMes[1]) / sMes[1]) * 100 << " %." << endl;
+    cout << " * Inflacion entre marzo y abril es igual a " << ((sMes[3] - sMes[2]) / sMes[2]) * 100 << " %." << endl;
+    cout << " * Inflacion entre abril y mayo es igual a " << ((sMes[4] - sMes[3]) / sMes[3]) * 100 << " %." << endl;
+    cout << " * Inflacion entre mayo y junio es igual a " << ((sMes[5] - sMes[4]) / sMes[4]) * 100 << " %." << endl;
+    cout << " * Inflacion entre junio y julio es igual a " << ((sMes[6] - sMes[5]) / sMes[5]) * 100 << " %." << endl;
+    cout << " * Inflacion entre julio y agosto es igual a " << ((sMes[7] - sMes[6]) / sMes[6]) * 100 << " %." << endl;
+    cout << " * Inflacion entre agosto y septiembre es igual a " << ((sMes[8] - sMes[7]) / sMes[7]) * 100 << " %."
+         << endl;
+    cout << " * Inflacion entre septiembre y octubre es igual a " << ((sMes[9] - sMes[8]) / sMes[8]) * 100 << " %."
+         << endl;
+    cout << " * Inflacion entre octubre y noviembre es igual a " << ((sMes[10] - sMes[9]) / sMes[9]) * 100 << " %."
+         << endl;
+    cout << " * Inflacion entre noviembre y diciembre es igual a " << ((sMes[11] - sMes[10]) / sMes[10]) * 100 << " %."
+         << endl;
 
-    return 1;
+
+
+    //double inflacion = ((montoF - montoI) / montoI) * 100;
+    //cout << " * N de productos " << arPro.size() << endl;
+    //cout << montoF << " / " << montoI << endl;
+    //cout << " * Inflacion entre " << fechaI << " y " << fechaF << " es igual a " << inflacion << " %." << endl;
+
+    return 0;
 }

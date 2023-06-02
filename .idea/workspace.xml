@@ -59,7 +59,7 @@
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;advanced.settings&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.tabs&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -90,7 +90,9 @@
       <workItem from="1685312543807" duration="2778000" />
       <workItem from="1685315364740" duration="3361000" />
       <workItem from="1685410011600" duration="39571000" />
-      <workItem from="1685547764538" duration="18339000" />
+      <workItem from="1685547764538" duration="18795000" />
+      <workItem from="1685645288419" duration="3522000" />
+      <workItem from="1685649008461" duration="22340000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1685315653968</created>
