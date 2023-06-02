@@ -26,7 +26,7 @@ int main() {
         return 0;
     }
     getline(allData, wes, '"');
-    while (allData.peek() != EOF &&compras<1800000){//EOF==-1
+    while (allData.peek() != EOF){//EOF==-1
         string records;
         getline(allData, records, '"');
         //cout << "*" << records << "*" <<endl;
