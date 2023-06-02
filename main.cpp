@@ -3,13 +3,13 @@
 #include <string>
 #include <sstream>
 #include <vector>
-//#include <algorithm>
 //#define name "CERVEZA BUDWEISER 6 PACK BOTELLA 343ML"
 
 using namespace std;
 
 int main() {
-    int compras = 0, cont = 0;
+    //int compras = 0;
+    int cont = 0;
     string sku, monto, fecha, descuento, estado, wes, nombre, hora;
 
     struct sPro {
@@ -26,7 +26,7 @@ int main() {
         return 0;
     }
     getline(allData, wes, '"');
-    while (allData.peek() != EOF){//EOF==-1
+    while (allData.peek() != EOF &&compras<1800000){//EOF==-1
         string records;
         getline(allData, records, '"');
         //cout << "*" << records << "*" <<endl;
@@ -51,7 +51,7 @@ int main() {
         if (cont == 6) {//una vez almacena los datos de la operacion
             cont = 0;
             if ((estado == "AUTHORIZED" || estado == "FINALIZED") && sku != "0" && monto != "0" && descuento!="DESCUENTO"){
-                compras++;
+                //compras++;
                 bool encontrado = false;
                 int auxstoi = stoi(fecha), valorF = stoi(monto) - stoi(descuento);
 /*
@@ -89,6 +89,7 @@ int main() {
     allData.close();
 
 /*
+
     cout << " * Nombre : " << name << endl;
     cout << " * Valor al dia de " << fechaI<< " = $ " << montoI << endl;
     cout << " * Valor al dia de " << fechaF<< " = $ " << montoF << endl;
@@ -97,6 +98,12 @@ int main() {
     cout << " * Total de compras de " << name << " = " << comprasProd << endl;
     cout << " * Total de compras = " << compras << endl;
     cout << " * Total de regitros = " << registros << endl;
+
+    double inflacion = ((montoF - montoI) / montoI) * 100;
+    cout << " * N de productos " << arPro.size() << endl;
+    cout << montoF << " / " << montoI << endl;
+    cout << " * Inflacion entre " << fechaI << " y " << fechaF << " es igual a " << inflacion << " %." << endl;
+
  */
 
     vector<double> sMes = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};

@@ -19,7 +19,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="95cecbaa-d0e3-4b97-bec3-d8dcf67010fb" name="Changes" comment="first commit">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.exe" beforeDir="false" afterPath="$PROJECT_DIR$/main.exe" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +92,7 @@
       <workItem from="1685410011600" duration="39571000" />
       <workItem from="1685547764538" duration="18795000" />
       <workItem from="1685645288419" duration="3522000" />
-      <workItem from="1685649008461" duration="22803000" />
+      <workItem from="1685649008461" duration="22340000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1685315653968</created>
