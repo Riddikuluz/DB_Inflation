@@ -77,7 +77,7 @@ int main() {
                         // cout << " * MONTO DEL MES YA REGISTRADO *" << endl;
                     }
                 }
-                if (!encontrado) {//si el producto no esta lo agrega
+                if (!encontrado) {//si el producto no esta, lo agrega al struct
                     vector<int> arrMonto = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
                     vector<int> arrCant = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
                     arrMonto[auxstoi - 1] = valorF;
@@ -94,18 +94,18 @@ int main() {
 
     //cout<< "N de productos = "<< arPro.size()<< endl;
     vector<double> sMes = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    for (int i = 0; i < arPro.size(); i++) {
+    for (int i = 0; i < arPro.size(); i++) {//en cada producto
         bool vacio = false;
         //cout << arPro[i].vNombre<< endl;
-        for (int j = 0; j < 12 && !vacio; j++) {
+        for (int j = 0; j < 12 && !vacio; j++) {//busca que este registrado todos los meses
             //cout << arPro[i].vMes[j]<<" - ";
             if (!arPro[i].vMes[j]) {
                 vacio = true;
             }
         }
-        if (!vacio){
+        if (!vacio){//si hay registro en los 12 meses
             //cout << arPro[i].vNombre<< endl;
-            for (int k = 0; k < 12; k++) {
+            for (int k = 0; k < 12; k++) { // se suma al total de cada mes
                 //cout << " * cantidad " << arPro[i].vMes[k]<< endl;;
                 sMes[k] = sMes[k] + arPro[i].vMes[k] * arPro[i].vCant[k];
             }
@@ -116,15 +116,15 @@ int main() {
 
 
     cout <<" * Variacion mensual"<< endl;
-    double sumainflacion=0;
+    double sInflacion=0;
     vector<string> dMeses = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
     for (int i = 0; i < 11; i++){
-        cout << " * Suma total de los valores del mes de " << i+1 << " = " << sMes[i] << endl;
+        //cout << " * Suma total de los valores del mes de " << i+1 << " = " << sMes[i] << endl;
         cout << " * Indice del mes de " << dMeses[i+1] << " respecto del mes de " << dMeses[i] << " es igual a " << (sMes[i+1] / sMes[i]-1) * 100 << " %." << endl;
-        sumainflacion+=(sMes[i+1] / sMes[i]-1) * 100;
+        sInflacion+=(sMes[i+1] / sMes[i]-1) * 100;
     }
 
-    cout << " * Inflacion mensual acumulada es igual a " << sumainflacion << " %." << endl;
+    cout << " * Inflacion mensual acumulada es igual a " << sInflacion << " %." << endl;
 
     //cout << " * Indice del mes de " << dMeses[11] << " respecto del mes de " << dMeses[0] << " es igual a " << (sMes[11] / sMes[0]-1) * 100 << " %." << endl;
     //double inflacion = ((montoF - montoI) / montoI) * 100;
