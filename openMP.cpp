@@ -27,11 +27,10 @@ void ipc(vector<double> sMes) {
 
     for (int i = 0; i < 11; i++) {
         cout << " * Suma total de los valores del mes de " << i + 1 << " = " << sMes[i] << endl;
-        cout << " * Indice del mes de " << dMeses[i + 1] << " respecto del mes de " << dMeses[i] << " es igual a "
-             << (sMes[i + 1] / sMes[i] - 1) * 100 << " %." << endl;
+        cout << " * Indice del mes de " << dMeses[i + 1] << " respecto del mes de " << dMeses[i] << " es igual a "<< fixed << setprecision(4) <<(sMes[i + 1] / sMes[i] - 1) * 100 << " %." << endl;
         if (i)
             infAcum[i] = (1 + infAcum[i - 1]) * (1 + (sMes[i + 1] / sMes[i] - 1)) - 1;
-        cout << " * Inflacion mensual acumulada es igual a " << infAcum[i] * 100 << " %." << endl;
+        cout << " * Inflacion mensual acumulada es igual a " << fixed << setprecision(4)<< infAcum[i] * 100 << " %." << endl;
         cout << endl;
     }
     //cout << " * Inflacion mensual acumulada es igual a " << infAcum[10]*100  << " %." << endl;
@@ -79,7 +78,7 @@ string fechaMes(string records) {
 }
 
 ifstream opencsv() {
-    string wes, dbSuper = "supermercado.csv";// supermercado - prueba1
+    string wes, dbSuper = "/srv/utem/supermercado.csv";// supermercado - prueba1
     ifstream allData;
     allData.open(dbSuper);
     if (allData.fail()) {

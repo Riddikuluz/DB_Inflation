@@ -14,7 +14,6 @@ struct sPro {
     vector<int> vMes = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     vector<int> vCant = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 };
-
 vector<sPro> arPro;
 
 void ipc(vector<double> sMes) {
