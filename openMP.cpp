@@ -136,6 +136,8 @@ int main() {
     {
 #pragma omp for
         for (; allData.peek() != EOF;) {//EOF==-1  for(;allData.peek() != EOF;) while (allData.peek() != EOF)
+#pragma omp critical
+            {
             string records;
             getline(allData, records, '"');
             //cout << "*" << records << "*" <<endl;
@@ -156,6 +158,7 @@ int main() {
                 //cout << "contador: " << cont << endl;
                 cont++;
             }
+        }
             if (cont > 5) {//una vez almacena todos los datos de la operacion
                 if (correctData(estado, sku, monto, descuento))
                     addProduct(arPro, fecha, monto, nombre);
