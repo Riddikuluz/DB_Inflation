@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <omp.h>
 #include <iomanip>
 //#define name "CERVEZA BUDWEISER 6 PACK BOTELLA 343ML"
 
@@ -19,23 +20,22 @@ vector<sPro> arPro;
 void ipc(vector<double> sMes) {
     cout << "\nVariacion mensual" << endl;
     cout << endl;
-
     vector<string> dMeses = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre","Octubre", "Noviembre", "Diciembre"};
     vector<double> infAcum = {(sMes[1] / sMes[0] - 1), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
     for (int i = 0; i < 11; i++) {
-        cout << " * Suma total de los valores del mes de " << i + 1 << " = " << sMes[i] << endl;
-        cout << " * Indice del mes de " << dMeses[i + 1] << " respecto del mes de " << dMeses[i] << " es igual a "
-             << (sMes[i + 1] / sMes[i] - 1) * 100 << " %." << endl;
+        //cout << " * Suma total de los valores del mes de " << i + 1 << " = " << sMes[i] << endl;
+        cout << " * Indice del mes de " << dMeses[i + 1] << " respecto del mes de " << dMeses[i] << " es igual a "<< fixed << setprecision(4) <<(sMes[i + 1] / sMes[i] - 1) * 100 << " %." << endl;
         if (i)
             infAcum[i] = (1 + infAcum[i - 1]) * (1 + (sMes[i + 1] / sMes[i] - 1)) - 1;
-        cout << " * Inflacion mensual acumulada es igual a " << infAcum[i] * 100 << " %." << endl;
+        cout << " * Inflacion mensual acumulada es igual a " << fixed << setprecision(4)<< infAcum[i] * 100 << " %." << endl;
         cout << endl;
     }
     //cout << " * Inflacion mensual acumulada es igual a " << infAcum[10]*100  << " %." << endl;
 }
 
+
 void producto_vacio(vector<sPro> arPro) {
+
     //cout<< "N de productos = "<< arPro.size()<< endl;
     vector<double> sMes = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     for (int i = 0; i < arPro.size(); i++) {//en cada producto
@@ -77,7 +77,7 @@ string fechaMes(string records) {
 }
 
 ifstream opencsv() {
-    string wes, dbSuper = "prueba1.csv";// supermercado - prueba1
+    string wes, dbSuper = "/srv/utem/supermercado.csv";// supermercado - prueba1 -/srv/utem/supermercado.csv
     ifstream allData;
     allData.open(dbSuper);
     if (allData.fail()) {
@@ -90,6 +90,7 @@ ifstream opencsv() {
 }
 
 void addProduct(vector<sPro> &arPro, string fecha, string monto, string nombre) {
+
     bool encontrado = false;
     int auxstoi = stoi(fecha), valorF = stoi(monto);
 
@@ -103,7 +104,6 @@ void addProduct(vector<sPro> &arPro, string fecha, string monto, string nombre) 
     cout << "Presione enter para continuar ...";
     cin.get();
    */
-
     for (int i = 0; i < arPro.size() && !encontrado; i++) {//busca si el producto esta en el struct
         if (arPro[i].vNombre == nombre) {
             encontrado = true;
@@ -115,6 +115,7 @@ void addProduct(vector<sPro> &arPro, string fecha, string monto, string nombre) 
             // cout << " * MONTO DEL MES YA REGISTRADO *" << endl;
         }
     }
+
     if (!encontrado) {//si el producto no esta, lo agrega al struct
         vector<int> arrMonto = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         vector<int> arrCant = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -129,10 +130,8 @@ void addProduct(vector<sPro> &arPro, string fecha, string monto, string nombre) 
 int main() {
     int cont = 0;
     ifstream allData = opencsv();
-    string sku, monto, fecha, descuento, estado, nombre, hora;
-
-    for (; allData.peek() != EOF;) {//EOF==-1  for(;allData.peek() != EOF;) while (allData.peek() != EOF)
-        string records;
+    string sku, monto, fecha, descuento, estado, nombre, hora,records;
+    for (; allData.peek() != EOF;) {
         getline(allData, records, '"');
         //cout << "*" << records << "*" <<endl;
         if (records != ";" && records != "\n") {
@@ -158,11 +157,9 @@ int main() {
             cont = 0;
         }
     }
-
     allData.close();
 
     producto_vacio(arPro);
-    
+
     return 0;
 }
-
