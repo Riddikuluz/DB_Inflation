@@ -8,91 +8,34 @@
 
 using namespace std;
 
-int main() {
-    int cont = 0;
-    string sku, monto, fecha, descuento, estado, wes, nombre, hora;
-    struct sPro {
-        string vNombre = "nProd";
-        vector<int> vMes = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        vector<int> vCant = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    };
-    vector<sPro> arPro;
+struct sPro {
+    string vNombre = "nProd";
+    vector<int> vMes = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    vector<int> vCant = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+};
 
-    string dbSuper = "prueba1.csv";// supermercado - prueba1
-    ifstream allData;
-    allData.open(dbSuper);
-    if (allData.fail()) {
-        cout << "Error al abrir el archivo: " << dbSuper << endl;
-        return 0;
+vector<sPro> arPro;
+
+void ipc(vector<double> sMes) {
+    cout << "\nVariacion mensual" << endl;
+    cout << endl;
+
+    vector<string> dMeses = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre","Octubre", "Noviembre", "Diciembre"};
+    vector<double> infAcum = {(sMes[1] / sMes[0] - 1), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+    for (int i = 0; i < 11; i++) {
+        cout << " * Suma total de los valores del mes de " << i + 1 << " = " << sMes[i] << endl;
+        cout << " * Indice del mes de " << dMeses[i + 1] << " respecto del mes de " << dMeses[i] << " es igual a "
+             << (sMes[i + 1] / sMes[i] - 1) * 100 << " %." << endl;
+        if (i)
+            infAcum[i] = (1 + infAcum[i - 1]) * (1 + (sMes[i + 1] / sMes[i] - 1)) - 1;
+        cout << " * Inflacion mensual acumulada es igual a " << infAcum[i] * 100 << " %." << endl;
+        cout << endl;
     }
-    getline(allData, wes, '"');
-    for (; allData.peek() != EOF;) {//EOF==-1  for(;allData.peek() != EOF;);while (allData.peek() != EOF);
-        string records;
-        getline(allData, records, '"');
-        //cout << "*" << records << "*" <<endl;
-        if (records != ";" && records != "\n") {
-            if (cont == 0)
-                sku = records;
-            else if (cont == 1)
-                nombre = records;
-            else if (cont == 2)
-                monto = records;
-            else if (cont == 3)
-                descuento = records;
-            else if (cont == 4) {
-                stringstream fetcha(records);
-                getline(fetcha, fecha, 'T');
-                fecha = fecha.substr(0, 7);//ano y mes
-                fecha = fecha.substr(5, 7);// mes
-                //getline(fetcha, hora, 'Z');
-            } else
-                estado = records;
-            //cout << "contador: " << cont << endl;
-            cont++;
-        }
-        if (cont > 5) {//una vez almacena todos los datos de la operacion
-            cont = 0;
-            if ((estado == "AUTHORIZED" || estado == "FINALIZED") && sku != "0" && monto != "0" &&
-                descuento != "DESCUENTO") {
-                bool encontrado = false;
-                int auxstoi = stoi(fecha), valorF = stoi(monto) - stoi(descuento);
+    //cout << " * Inflacion mensual acumulada es igual a " << infAcum[10]*100  << " %." << endl;
+}
 
-                /*cout << "\nsku: " << sku << endl;
-                cout << "nombre: " << nombre << endl;
-                cout << "monto: " << monto << endl;
-                cout << "descuento: " << descuento << endl;
-                cout << "fecha: " << fecha << endl;
-                cout << "hora: " << hora << endl;
-                cout << "estado: " << estado << endl;
-                cout << "Presione enter para continuar ...";
-                cin.get();
-               */
-                for (int i = 0; i < arPro.size() && !encontrado; i++) {//busca si el producto esta en el struct
-                    if (arPro[i].vNombre == nombre) {
-                        encontrado = true;
-                        arPro[i].vCant[auxstoi - 1]++;
-                        if (arPro[i].vMes[auxstoi - 1] == 0)
-                            arPro[i].vMes[auxstoi - 1] = valorF;
-                        //cout << " * sku EXISTE= " << arPro[i].vsku << " * mes = " << auxstoi << " * valor = "<< arPro[i].vMes[auxstoi - 1] << endl;
-                        // else
-                        // cout << " * MONTO DEL MES YA REGISTRADO *" << endl;
-                    }
-                }
-                if (!encontrado) {//si el producto no esta, lo agrega al struct
-                    vector<int> arrMonto = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-                    vector<int> arrCant = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-                    arrMonto[auxstoi - 1] = valorF;
-                    arrCant[auxstoi - 1] = 1;
-                    sPro aux{nombre, arrMonto, arrCant};
-                    arPro.push_back(aux);
-                    //cout << " * sku NUEVA = " << arPro[arPro.size() - 1].vsku << " * mes = " << auxstoi << " * valor = "<< arPro[arPro.size() - 1].vMes[stoi(fecha) - 1] << endl;
-                }
-            }
-        }
-    }
-
-    allData.close();
-
+void producto_vacio(vector<sPro> arPro) {
     //cout<< "N de productos = "<< arPro.size()<< endl;
     vector<double> sMes = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     for (int i = 0; i < arPro.size(); i++) {//en cada producto
@@ -114,26 +57,112 @@ int main() {
             //cin.get();
         }
     }
+    ipc(sMes);
+}
 
-    cout << " * Variacion mensual" << endl;
-    vector<string> dMeses = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre","Octubre", "Noviembre", "Diciembre"};
+bool correctData(string estado, string sku, string monto, string descuento) {
+    if ((estado == "AUTHORIZED" || estado == "FINALIZED") && sku != "0" && monto != "0" && descuento != "DESCUENTO")
+        return true;
+    else
+        return false;
+}
 
-    vector<double> infAcum = {(sMes[1] / sMes[0] - 1), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+string fechaMes(string records) {
+    string fecha;
+    stringstream fetcha(records);
+    getline(fetcha, fecha, 'T');
+    fecha = fecha.substr(0, 7);//ano y mes
+    fecha = fecha.substr(5, 7);// mes
+    return fecha;
+}
 
-    for (int i = 0; i < 11; i++) {
-        //cout << " * Suma total de los valores del mes de " << i+1 << " = " << sMes[i] << endl;
-        cout << " * Indice del mes de " << dMeses[i + 1] << " respecto del mes de " << dMeses[i] << " es igual a "<< (sMes[i + 1] / sMes[i] - 1) * 100 << " %." << endl;
-        if (i)
-            infAcum[i] = (1 + infAcum[i - 1]) * (1 + (sMes[i + 1] / sMes[i] - 1)) - 1;
-        cout << " * Inflacion mensual acumulada es igual a " << infAcum[i]*100 << " %." << endl<< endl;
+ifstream opencsv() {
+    string wes, dbSuper = "prueba1.csv";// supermercado - prueba1
+    ifstream allData;
+    allData.open(dbSuper);
+    if (allData.fail()) {
+        cout << "Error al abrir el archivo: " << dbSuper << endl;
+        return 0;
+    } else {
+        getline(allData, wes, '"');
+        return allData;
     }
-    //cout << " * Inflacion mensual acumulada es igual a " << infAcum[10]*100  << " %." << endl;
+}
 
-    //cout << " * Indice del mes de " << dMeses[11] << " respecto del mes de " << dMeses[0] << " es igual a " << (sMes[11] / sMes[0]-1) * 100 << " %." << endl;
-    //double inflacion = ((montoF - montoI) / montoI) * 100;
-    //cout << " * N de productos " << arPro.size() << endl;
-    //cout << montoF << " / " << montoI << endl;
-    //cout << " * Inflacion entre " << fechaI << " y " << fechaF << " es igual a " << inflacion << " %." << endl;
+void addProduct(vector<sPro> &arPro, string fecha, string monto, string nombre) {
+    bool encontrado = false;
+    int auxstoi = stoi(fecha), valorF = stoi(monto);
 
+    /*cout << "\nsku: " << sku << endl;
+    cout << "nombre: " << nombre << endl;
+    cout << "monto: " << monto << endl;
+    cout << "descuento: " << descuento << endl;
+    cout << "fecha: " << fecha << endl;
+    cout << "hora: " << hora << endl;
+    cout << "estado: " << estado << endl;
+    cout << "Presione enter para continuar ...";
+    cin.get();
+   */
+
+    for (int i = 0; i < arPro.size() && !encontrado; i++) {//busca si el producto esta en el struct
+        if (arPro[i].vNombre == nombre) {
+            encontrado = true;
+            arPro[i].vCant[auxstoi - 1]++;
+            if (arPro[i].vMes[auxstoi - 1] == 0)//{
+                arPro[i].vMes[auxstoi - 1] = valorF;
+            //cout << " * sku EXISTE= " << arPro[i].vsku << " * mes = " << auxstoi << " * valor = "<< arPro[i].vMes[auxstoi - 1] << endl;
+            //}else
+            // cout << " * MONTO DEL MES YA REGISTRADO *" << endl;
+        }
+    }
+    if (!encontrado) {//si el producto no esta, lo agrega al struct
+        vector<int> arrMonto = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        vector<int> arrCant = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        arrMonto[auxstoi - 1] = valorF;
+        arrCant[auxstoi - 1] = 1;
+        sPro aux{nombre, arrMonto, arrCant};
+        arPro.push_back(aux);
+        //cout << " * sku NUEVA = " << arPro[arPro.size() - 1].vsku << " * mes = " << auxstoi << " * valor = "<< arPro[arPro.size() - 1].vMes[stoi(fecha) - 1] << endl;
+    }
+}
+
+int main() {
+    int cont = 0;
+    ifstream allData = opencsv();
+    string sku, monto, fecha, descuento, estado, nombre, hora;
+
+    for (; allData.peek() != EOF;) {//EOF==-1  for(;allData.peek() != EOF;) while (allData.peek() != EOF)
+        string records;
+        getline(allData, records, '"');
+        //cout << "*" << records << "*" <<endl;
+        if (records != ";" && records != "\n") {
+            if (cont == 0)
+                sku = records;
+            else if (cont == 1)
+                nombre = records;
+            else if (cont == 2)
+                monto = records;
+            else if (cont == 3)
+                descuento = records;
+            else if (cont == 4) {
+                fecha = fechaMes(records);// mes
+                //getline(fetcha, hora, 'Z');
+            } else
+                estado = records;
+            //cout << "contador: " << cont << endl;
+            cont++;
+        }
+        if (cont > 5) {//una vez almacena todos los datos de la operacion
+            if (correctData(estado, sku, monto, descuento))
+                addProduct(arPro, fecha, monto, nombre);
+            cont = 0;
+        }
+    }
+
+    allData.close();
+
+    producto_vacio(arPro);
+    
     return 0;
 }
+
