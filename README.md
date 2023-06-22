@@ -1,4 +1,4 @@
-# ## Programa: Análisis de Inflación Mensual
+# Programa: Análisis de Inflación Mensual
 
 Este programa realiza un análisis de inflación mensual utilizando datos de ventas de productos de un supermercado. Lee los datos de un archivo CSV y procesa la información para calcular la variación mensual de precios y la inflación mensual acumulada.
 
